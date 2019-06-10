@@ -5,6 +5,7 @@ import {rtdbPlugin} from 'vuefire'
 import VueRouter from 'vue-router'
 import {routes} from './routes'
 import firebase from 'firebase';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
 
 Vue.use(rtdbPlugin)

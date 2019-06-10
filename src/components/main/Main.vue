@@ -12,7 +12,7 @@
         :theme="selectedTheme"
         :collapsed="collapsed"
         @collapse="onCollapse"
-        width="300px"
+        width="250px"
       />
     </div>
     </div>
@@ -37,7 +37,7 @@ export default {
                     },
                     {
                         title: 'Agregar',
-                        icon: 'fa fa-tint',
+                        icon: 'fa fa-plus',
                         href: '/agregar'
                         // disabled: true
                         // class:''
@@ -53,7 +53,7 @@ export default {
                     },
                     {
                         title: 'Dashboard',
-                        icon: 'fa fa-board',
+                        icon: 'fa fa-table',
                         href: '/dashboard'
                     }
             ],

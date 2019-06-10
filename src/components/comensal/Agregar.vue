@@ -1,46 +1,49 @@
 <template>
-    <div class="form-style-2">
-        
-    <div class="form-style-2-heading">Agregar nueva comensal</div>
+    <!-- Default form register -->
     <form @submit.prevent="add">
 
-        <label for="centro"><span>Centro</span>
-            <select name="centro" v-model="centro">
-                <option v-for="(o,j) in centros" :key="j" :value="o">{{o}}</option>
-            </select>
-        </label>
+        <p class="h4 mb-4">Nueva comensal</p>
 
-        <label for="nombre"><span>Nombre</span>
-        <input type="text" name="nombre" v-model="nombre" /></label>
+        <select name="centro" class="form-control mb-4" placeholder="Centro" v-model="centro">
+            <option value="" disabled selected>Centro</option>
+            <option v-for="(o,j) in centros" :key="j" :value="o">{{o}}</option>
+        </select>
 
-        <b>Valores por defecto</b>
-        <div v-for="(t,i) in tiempos" :key="i" class="row">
-            <label class="tiempo">
-                <span>{{t.nombre.charAt(0).toUpperCase() + t.nombre.slice(1)}}</span>
-            </label>
-            
-            <div class="col-sm">
-            <select v-model="valores[t.nombre]">
-                <option value="">Ninguno</option>
-                <option v-for="(o,j) in t.tipos" :key="j" :value="o">{{o}}</option>
-            </select>
-
+        <input type="text" v-model="nombre" class="form-control mb-4" placeholder="Nombre">
+        
+        <div class="form-row mb-4">
+            <div class="col" v-for="d in dias" :key="d.id">
+                {{d.nombre}}
+                <select v-for="(t,i) in tiempos" :key="i"
+                 v-model="valores[d.id][i]"
+                 class="form-control mb-2">
+                    <option value="" disabled selected>
+                        {{t.nombre.charAt(0).toUpperCase() + t.nombre.slice(1)}}
+                    </option>
+                    <option v-for="(o,j) in t.tipos" :key="j" :value="o">{{o}}</option>
+                </select>
             </div>
-
+            
         </div>
 
-        <br>
+        <!-- <input type="email" id="defaultRegisterFormEmail" class="form-control mb-4" placeholder="E-mail">
 
-        <label style="clear:both" ><span> </span>
-        <input type="submit" value="Agregar" /></label>
+        <input type="password" id="defaultRegisterFormPassword" class="form-control" placeholder="Password" aria-describedby="defaultRegisterFormPasswordHelpBlock">
+        <small id="defaultRegisterFormPasswordHelpBlock" class="form-text text-muted mb-4">
+            At least 8 characters and 1 digit
+        </small> -->
+
+
+        <!-- Sign up button -->
+        <button class="btn btn-info" type="submit">Agregar</button>
 
         <span class="msg">{{msg}}</span>
         
         <span class="exito">{{exito}}</span>
-
+        
         <pre>{{ $data}}</pre>
+
     </form>
-    </div>
 </template>
 
 <script>
@@ -55,10 +58,23 @@ export default {
         return{
             nombre: '',
             tiempos: [],
+            dias:[
+                {nombre:'Lunes', id: 1},
+                {nombre:'Martes', id: 2},
+                {nombre:'Miercoles', id: 3},
+                {nombre:'Jueves', id: 4},
+                {nombre:'Viernes', id: 5},
+                {nombre:'Sábado', id: 6},
+                {nombre:'Domingo', id: 0}
+            ],
             valores:{
-                desayuno: '',
-                almuerzo: '',
-                cena: ''
+                0:[],
+                1:[],
+                2:[],
+                3:[],
+                4:[],
+                5:[],
+                6:[]
             },
             centro: '',
             centros:[],
@@ -79,8 +95,12 @@ export default {
                     nombre: tiempos[tiempo].nombre,
                     tipos: tiempos[tiempo].tipos.filter(x=>x!='')
                 })
+                
+                for (let v in this.valores) {
+                    this.valores[v].push('')
+                    // console.log("valores",this.valores[v])   
+                }
             }
-            console.log(this.tiempos);
         },
         cargarCentros(centros) {
             this.centros = []
