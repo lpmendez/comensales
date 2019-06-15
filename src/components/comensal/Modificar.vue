@@ -1,14 +1,18 @@
 <template>
-  <!-- Default form register -->
-  <form @submit.prevent="add">
-    <p class="h4 mb-4">Nueva comensal</p>
+  <form @submit.prevent="mod">
+    <p>{{ centro }}</p>
+    <p class="h4 mb-4">Modificar comensal</p>
 
-    <select name="centro" class="form-control mb-4" placeholder="Centro" v-model="centro">
-      <option value disabled selected>Centro</option>
-      <option v-for="(o,j) in centros" :key="j" :value="o">{{o}}</option>
+    <select
+      name="nombre"
+      class="form-control mb-4"
+      placeholder="Nombre"
+      v-model="nombre"
+      @change="cargar()"
+    >
+      <option value disabled selected>Nombre</option>
+      <option v-for="(o,j) in nombres" :key="j" :value="o.id">{{o.data.nombre}}</option>
     </select>
-
-    <input type="text" v-model="nombre" class="form-control mb-4" placeholder="Nombre">
 
     <div class="form-row mb-4">
       <div class="col" v-for="d in dias" :key="d.id">
@@ -31,7 +35,7 @@
     <textarea v-model="adicional.dieta" class="form-control mb-4"></textarea>
 
     <!-- Sign up button -->
-    <button class="btn btn-info" type="submit">Agregar</button>
+    <button class="btn btn-info" type="submit">Modificar</button>
 
     <span class="msg">{{msg}}</span>
 
@@ -41,17 +45,20 @@
   </form>
 </template>
 
+
 <script>
 import firebase from "firebase";
 import { db } from "../../db.js";
 
 var tiempos = db.ref("tiempos");
 var personas = db.ref("personas");
-var centros = db.ref("centros");
+
 export default {
   data() {
     return {
+      centro: this.$route.params.id,
       nombre: "",
+      nombres: [],
       tiempos: [],
       adicional: {
         comentarios: "",
@@ -76,15 +83,9 @@ export default {
         5: [],
         6: []
       },
-      centro: "",
-      centros: [],
       msg: "",
       exito: ""
     };
-  },
-  created() {
-    tiempos.on("value", snapshot => this.cargarTiempos(snapshot.val()));
-    centros.on("value", snapshot => this.cargarCentros(snapshot.val()));
   },
   methods: {
     cargarTiempos(tiempos) {
@@ -102,33 +103,53 @@ export default {
         }
       }
     },
-    cargarCentros(centros) {
-      this.centros = [];
-      for (let c in centros) {
-        this.centros.push(centros[c].name);
+    cargarPersonas(nombres) {
+      this.nombres = [];
+      console.log("firebase", nombres, "centro", this.centro);
+
+      for (let c in nombres) {
+        if (nombres[c].centro == this.centro)
+          this.nombres.push({ id: c, data: nombres[c] });
       }
-      console.log(this.centros);
+      console.log("personas", this.nombres);
     },
-    add() {
-      if (this.nombre != "") {
-        let newPeople = {
-          nombre: this.nombre,
-          tiempos: this.valores,
-          centro: this.centro,
-          adicional: this.adicional
-        };
-        personas.push(newPeople);
-        this.nombre = "";
-        this.tiempos = [];
-        this.centro = "";
-      } else this.msg = "Debes digitar un nombre";
+    mod(object) {
+      if (this.nombre) {
+        // let newPeople = {
+        //   nombre: this.nombre,
+        //   tiempos: this.valores,
+        //   centro: this.centro
+        // };
+        // personas.push(newPeople);
+        personas
+          .child(this.nombre)
+          .child("tiempos")
+          .set(this.valores);
+
+        //guardando adicionales
+        personas
+          .child(this.nombre)
+          .child("adicional")
+          .set(this.adicional);
+      } else this.msg = "Debes seleccionar un nombre";
+    },
+    cargar() {
+      if (this.nombre) {
+        const firebase = this.nombres.filter(x => this.nombre == x.id)[0].data;
+        this.adicional = firebase.adicional;
+        for (let v in this.valores) {
+          this.valores[v] = firebase.tiempos[v];
+        }
+      }
     }
+  },
+  created() {
+    console.log("id", this.centro, this.$route.params.id);
+    tiempos.on("value", snapshot => this.cargarTiempos(snapshot.val()));
+    personas.on("value", snapshot => this.cargarPersonas(snapshot.val()));
   }
 };
 </script>
 
 <style>
-.tiempo {
-  width: 150px;
-}
 </style>
