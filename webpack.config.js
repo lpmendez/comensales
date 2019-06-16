@@ -36,7 +36,12 @@ var config = {
       }
     ]
   },
-  plugins: [new VueLoaderPlugin(), new Dotenv()],
+  plugins: [
+    new VueLoaderPlugin(),
+    new Dotenv({
+      systemvars: true
+    })
+  ],
   resolve: {
     extensions: [".js", ".jsx"],
     modules: ["node_modules", jsSourcePath],
