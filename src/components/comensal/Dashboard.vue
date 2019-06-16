@@ -168,7 +168,7 @@ export default {
             x.tiempos[tiempo] == tipo
         );
 
-        if ((tipo == "Ausente" || tipo == "") && things.length > 0)
+        if (tipo == "Ausente" && things.length > 0)
           return things
             .reduce((acc, cur) => `${acc}, ${cur.nombre}`, "")
             .replace(", ", "");

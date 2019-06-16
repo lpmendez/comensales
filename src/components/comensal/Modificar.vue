@@ -41,7 +41,7 @@
 
     <span class="exito">{{exito}}</span>
 
-    <pre>{{ $data}}</pre>
+    <!-- <pre>{{ $data}}</pre> -->
   </form>
 </template>
 
@@ -141,12 +141,21 @@ export default {
           this.valores[v] = firebase.tiempos[v];
         }
       }
+    },
+    initialLoad() {
+      console.log("id", this.centro, this.$route.params.id);
+      tiempos.on("value", snapshot => this.cargarTiempos(snapshot.val()));
+      personas.on("value", snapshot => this.cargarPersonas(snapshot.val()));
     }
   },
   created() {
-    console.log("id", this.centro, this.$route.params.id);
-    tiempos.on("value", snapshot => this.cargarTiempos(snapshot.val()));
-    personas.on("value", snapshot => this.cargarPersonas(snapshot.val()));
+    this.initialLoad();
+  },
+  watch: {
+    "$route.params.id"(newId, oldId) {
+      this.centro = newId;
+      this.initialLoad();
+    }
   }
 };
 </script>
