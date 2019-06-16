@@ -1,5 +1,4 @@
 import firebase from "firebase";
-console.log("Apikey", process.env.APIKEY);
 var config = {
   apiKey: process.env.APIKEY,
   authDomain: process.env.AUTHDOMAIN,

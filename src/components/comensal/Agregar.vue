@@ -37,7 +37,7 @@
 
     <span class="exito">{{exito}}</span>
 
-    <!-- <pre>{{ $data}}</pre> -->
+    <pre>{{ $data}}</pre>
   </form>
 </template>
 
@@ -119,7 +119,7 @@ export default {
         };
         personas.push(newPeople);
         this.nombre = "";
-        this.tiempos = [];
+        // this.tiempos = [];
         this.centro = "";
       } else this.msg = "Debes digitar un nombre";
     }
